@@ -9,11 +9,13 @@ import (
 )
 
 func torrent2size(link string) string {
-	cmd := fmt.Sprintf("curl %s | tac | tac | head -1 | grep -aoE '6:lengthi[0-9]+' | cut -di -f2", link)
+	cmd := fmt.Sprintf("curl %s | tac | tac | head -1 | grep -aoE '6:lengthi[0-9]+' | cut -di -f2 | awk '{s+=$1}END{print s}' ", link) + "| awk '{printf \"%d\", $1}' "
+	// println(string(cmd))
 	out, err := exec.Command("bash", "-c", cmd).Output()
 	if err != nil {
 		return string("1145141919810")
 	} else {
+		// println(string(out))
 		return string(out)
 	}
 }

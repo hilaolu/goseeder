@@ -2,13 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/robfig/cron"
 	"os"
 	"seeder/src/config"
 	"seeder/src/datebase"
 	"seeder/src/nexus"
 	"seeder/src/qbittorrent"
 	"strconv"
+	"time"
+
+	"github.com/robfig/cron"
 )
 
 func main() {
@@ -49,13 +51,14 @@ func main() {
 		for _, node := range nodes {
 			fmt.Println("start query")
 			ts, _ = node.Get()
+			ts = ts[:30]
 			for _, t := range ts {
 				// 解决重复添加问题
 				for _, server := range servers {
 					server.CalcEstimatedQuota()
 					if db.Get(t.GUID) == false {
 						if Size, err := strconv.Atoi(t.Size); err == nil {
-							if server.AddTorrentByURL(t.URL, Size, int(node.Rule.SpeedLimit * 1024 * 1024)) == true {
+							if server.AddTorrentByURL(t.URL, Size, int(node.Rule.SpeedLimit*1024*1024)) == true {
 								fmt.Println("[" + server.Remark + "][添加]种子:" + t.Title)
 								db.Insert(t.Title, t.GUID, t.URL)
 							}
@@ -69,5 +72,7 @@ func main() {
 				}
 			}
 		}
+
+		time.Sleep(514 * time.Second)
 	}
 }

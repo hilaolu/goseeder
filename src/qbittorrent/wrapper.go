@@ -155,7 +155,7 @@ func (s *Server) AddTorrentByURL(URL string, Size int, SpeedLimit int) bool {
 	options_add.Category = strings.Split(strings.Split(URL, "//")[1], "/")[0]
 	options_add.DlLimit = strconv.Itoa(SpeedLimit)
 	options_add.UpLimit = strconv.Itoa(SpeedLimit)
-
+	// fmt.Printf("EstQuota:%d\nSize:%d\nMin%d\n", s.Status.EstimatedQuota, Size, s.Rule.MinTaskSize)
 	if ts, err := s.Client.GetList(); err == nil {
 		for _, t := range ts {
 			if t.Size == Size {
@@ -178,7 +178,6 @@ func (s *Server) AddTorrentByURL(URL string, Size int, SpeedLimit int) bool {
 	if Size < s.Rule.MaxTaskSize && Size > s.Rule.MinTaskSize && s.ServerRuleTest() == true {
 		//如果允许超量提交(即塞了这个任务后,并且任务完成后空间会负数,则不检查空间直接OK!),否则检查是否塞进去后还有空间剩余.
 		//这个功能针对极小盘有很好的作用,因为极小盘很容易就会塞满,参数又不好调整.
-		// print("EstQuota:" + string(s.Status.EstimatedQuota) + "\nSize" + string(Size) + "\n")
 		if s.Rule.DiskOverCommit == true || (s.Status.EstimatedQuota-Size) > (s.Rule.DiskThreshold/10) {
 			if err := s.Client.AddURLs(URL, &options_add); err == nil {
 				return true
