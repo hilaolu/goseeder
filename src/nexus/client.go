@@ -2,7 +2,6 @@ package nexus
 
 import (
 	"fmt"
-	"hash/fnv"
 	"os/exec"
 	"seeder/src/config"
 
@@ -10,15 +9,13 @@ import (
 )
 
 func torrent2size(link string) string {
-	cmd := fmt.Sprintf("curl %s | head -1 | grep -aoE '6:lengthi[0-9]+' | cut -di -f2", link)
-	out, _ := exec.Command(cmd).Output()
-	return string(out)
-}
-
-func hash(s string) uint32 {
-	h := fnv.New32a()
-	h.Write([]byte(s))
-	return h.Sum32()
+	cmd := fmt.Sprintf("curl %s | tac | tac | head -1 | grep -aoE '6:lengthi[0-9]+' | cut -di -f2", link)
+	out, err := exec.Command("bash", "-c", cmd).Output()
+	if err != nil {
+		return string("1145141919810")
+	} else {
+		return string(out)
+	}
 }
 
 type Client struct {
