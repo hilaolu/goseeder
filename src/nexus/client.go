@@ -34,7 +34,7 @@ func (c *Client) Get() ([]Torrent, error) {
 			ts = append(ts, Torrent{
 				GUID:  value.GUID,
 				Title: value.Title,
-				URL:   value.Enclosures[0].URL,
+				URL:   value.Enclosures[0].Link,
 				Size:  value.Enclosures[0].Length,
 			})
 		}
