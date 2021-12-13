@@ -47,6 +47,7 @@ func main() {
 	for true {
 		var ts []nexus.Torrent
 		for _, node := range nodes {
+			fmt.Println("start query")
 			ts, _ = node.Get()
 			for _, t := range ts {
 				// 解决重复添加问题
