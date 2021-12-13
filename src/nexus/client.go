@@ -45,7 +45,7 @@ func (c *Client) Get() ([]Torrent, error) {
 				GUID:  value.GUID,
 				Title: value.Title,
 				URL:   value.Link,
-				Size:  strconv.Itoa(hash(value.Link)),
+				Size:  strconv.Itoa(int(hash(value.Link))),
 			})
 		}
 		return ts, nil
