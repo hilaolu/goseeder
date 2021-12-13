@@ -170,7 +170,7 @@ func (s *Server) AddTorrentByURL(URL string, Size int, SpeedLimit int) bool {
 
 	// HDTIME网站不足100G大小种子会被忽略.
 	if strings.Contains(URL, "hdtime.org") {
-		if Size < 100 * 1024 * 1024 * 1024 {
+		if Size < 100*1024*1024*1024 {
 			return true
 		}
 	}
@@ -215,7 +215,7 @@ func (s *Server) CalcEstimatedQuota() {
 }
 
 func NewClientWrapper(baseURL string, username string, password string, remark string, rule config.ServerRule) Server {
-	server,err := NewClient(baseURL,username,password)
+	server, err := NewClient(baseURL, username, password)
 
 	if err != nil {
 		print("[" + remark + "]密码打错了,赶紧去修正.")

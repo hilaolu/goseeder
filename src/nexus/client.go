@@ -1,22 +1,29 @@
 package nexus
 
 import (
-	"github.com/mmcdole/gofeed"
+	"fmt"
+	"hash/fnv"
+	"os/exec"
 	"seeder/src/config"
-        "hash/fnv"
-	"strconv"
+
+	"github.com/mmcdole/gofeed"
 )
 
+func torrent2size(link string) string {
+	cmd := fmt.Sprintf("curl %s | head -1 | grep -aoE '6:lengthi[0-9]+' | cut -di -f2", link)
+	out, _ := exec.Command(cmd).Output()
+	return string(out)
+}
 
 func hash(s string) uint32 {
-        h := fnv.New32a()
-        h.Write([]byte(s))
-        return h.Sum32()
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return h.Sum32()
 }
 
 type Client struct {
 	baseURL string
-	Rule config.NodeRule
+	Rule    config.NodeRule
 }
 
 type Torrent struct {
@@ -26,11 +33,11 @@ type Torrent struct {
 	Size  string
 }
 
-func NewClient(source string, limit int, passkey string,Rule config.NodeRule) Client {
-	var baseURL = "https://" + source 
+func NewClient(source string, limit int, passkey string, Rule config.NodeRule) Client {
+	var baseURL = "https://" + source
 	return Client{
 		baseURL: baseURL,
-		Rule:Rule,
+		Rule:    Rule,
 	}
 }
 
@@ -44,7 +51,7 @@ func (c *Client) Get() ([]Torrent, error) {
 				GUID:  value.GUID,
 				Title: value.Title,
 				URL:   value.Link,
-				Size:  strconv.Itoa(int(hash(value.Link))),
+				Size:  torrent2size(value.Link),
 			})
 		}
 		return ts, nil
