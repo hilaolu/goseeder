@@ -3,7 +3,6 @@ package nexus
 import (
 	"github.com/mmcdole/gofeed"
 	"seeder/src/config"
-	"strconv"
 )
 
 type Client struct {
