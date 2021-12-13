@@ -3,7 +3,17 @@ package nexus
 import (
 	"github.com/mmcdole/gofeed"
 	"seeder/src/config"
+	"fmt"
+        "hash/fnv"
+	"strconv"
 )
+
+
+func hash(s string) uint32 {
+        h := fnv.New32a()
+        h.Write([]byte(s))
+        return h.Sum32()
+}
 
 type Client struct {
 	baseURL string
@@ -35,7 +45,7 @@ func (c *Client) Get() ([]Torrent, error) {
 				GUID:  value.GUID,
 				Title: value.Title,
 				URL:   value.Link,
-				Size:  value.Length,
+				Size:  strconv.Itoa(hash(value.Link)),
 			})
 		}
 		return ts, nil
